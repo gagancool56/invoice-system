@@ -1,0 +1,189 @@
+    <!DOCTYPE html>
+<head>
+    <title>Invoice</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="view.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script>
+      $(document).ready(function(){ 
+          /* ADD row*/
+          var srno=serialno();
+                var data="";
+                    data += "<tr>";
+                    data += "<td>"+srno+"<\/td>";
+                    data += "<td><input type=\"text\" name='product[]'  placeholder='Product Name' class=\"form-control product\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='price[]' placeholder='Unit Price' class=\"form-control price\" min=\"0\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='qty[]' placeholder='Enter Qty' class=\"form-control qty\"  min=\"0\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='total[]' placeholder='0.00' class=\"form-control total\" readonly\/><\/td>";
+                    data += "<td><button type=\"button\" class=\"btn btn-danger del\">Delete<\/button><\/td>";
+                    data += "<\/tr>";
+              $('#maintable').append(data);
+              
+            $("#addmore").click(function(){
+                var srno=serialno();
+                var data="";
+                    data += "<tr>";
+                    data += "<td>"+srno+"<\/td>";
+                    data += "<td><input type=\"text\" name='product[]'  placeholder='Product Name' class=\"form-control product\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='price[]' placeholder='Unit Price' class=\"form-control price\" min=\"0\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='qty[]' placeholder='Enter Qty' class=\"form-control qty\"  min=\"0\"\/><\/td>";
+                    data += "<td><input type=\"number\" name='total[]' placeholder='0.00' class=\"form-control total\" readonly\/><\/td>";
+                    data += "<td><button type=\"button\" class=\"btn btn-danger del\">Delete<\/button><\/td>";
+                    data += "<\/tr>";
+              $('#maintable').append(data);
+        }); 
+
+          $("#maintable tbody").on("click",".del",function(event){
+            event.preventDefault();
+            var rowCount=$('#maintable tr').length;
+            var row = $(this).closest('tr');
+            var siblings = row.siblings();
+                if(rowCount>2){
+                    var Response=confirm("Are you sure want to delete?");
+                    if(Response==true){
+                        row.remove();
+                        siblings.each(function(i) {
+                            $(this).children().first().text(i+1);
+                        });
+                     }//response if close
+                    serialno();
+		            calc();
+                }//if close
+            });
+
+        /*Reindex the row no */
+        function serialno(){
+            var rcount=$('#maintable tr').length;
+            for(var j=1;j<=rcount-1;j++){   
+            }
+           return(j);
+
+        }
+        /*calculate function*/
+        function calc() {
+            $('#maintable tbody tr').each(function() {
+                var html = $(this).html();
+                if(html!='')
+                {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    $(this).find('.total').val(qty*price);
+                    calc_total();
+                }
+            });   
+        }
+        /*on keyup or change call calc function*/
+        $('#maintable tbody').on('keyup change',function(){
+             calc();
+        });
+
+        /*total amount function*/
+        function calc_total(){
+        total=0;
+            $('.total').each(function() {
+                total += parseInt($(this).val());
+            });
+            $('#total_amount').val(total);
+            $('#total_amount2').val(total);
+        }  
+    }); 
+  </script>
+</head>
+<body>
+    <div class="container custom-container">
+        <h1 class="text-center invoice">INVOICE</h1>
+    </div>
+    <div class="container custom-container">
+            <table class="table table-dark" id="maintable">
+                    <thead>
+                      <tr>
+                        <th>Sr.no</th>
+                        <th>Product</th>
+                        <th>Rate</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+    </div>
+
+        <div class="container button-container">
+        <table class="float-right" id="buttons"><th></th><th>Total</th>
+            <tbody>
+                <tr> 
+                 <td class="float-left"><button type="button" class="btn btn-info" id="addmore">Add More</button>
+                  <button type="button" class="btn btn-success" onclick="showData()">Submit</button></td>
+                    <td><input type="number" name='total_amount' id="total_amount" placeholder='0.00' class="form-control" readonly/></td>
+                </tr>
+               
+            </tbody>
+        </table>
+        </div>
+
+
+    <script>
+        /*Show data after submitting the form */
+        function showData(){
+            $('#maintable,#buttons').hide(100);
+            $('#viewtable').show(100);
+            $('#total2').show(100);
+            var sr=0;
+            $('#maintable tbody tr').each(function(){
+                sr++;
+                var product=$(this).find('.product').val();
+                var price = $(this).find('.price').val();
+                var qty = $(this).find('.qty').val();
+                var total = $(this).find('.total').val();
+                
+                var data="";
+                    data += "<tr class=\"eachrow\">";
+                    data += "<td>"+sr+"<\/td>";   
+                    data += "<td>"+product+"<\/td>";
+                    data += "<td>"+price+"<\/td>";
+                    data += "<td>"+qty+"<\/td>";
+                    data += "<td>"+total+"<\/td>";
+                    data += "<\/tr>";
+                $('#viewtable').append(data);
+            });
+        }
+    </script>
+    <div class="container custom-container">
+        <table class="table table-dark" id="viewtable">
+            <thead>
+            <tr>
+                <th>Sr.no</th>
+                <th>Product</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <table class="table" id="total2">
+            <thead>
+                <tr>
+                    <th class="float-right">Grand total</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="float-right">
+                    <td><input type="number" name='total_amount' id="total_amount2" placeholder='0.00' class="form-control" readonly/></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,19 @@
+
+.custom-container{
+    width: 60%;
+}
+.button-container{
+    width: 60%;
+}
+.invoice{
+    background:#343a40;
+    color:#fff;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+#viewtable{
+    display:none;
+}
+#total2{
+    display:none;
+}
